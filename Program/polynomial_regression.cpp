@@ -3,231 +3,267 @@
 #include <fstream>
 #include <iomanip>
 #include <cmath>
-#include <string> // Required for std::string, std::to_string
+#include <string> // Diperlukan untuk std::string, std::to_string
 
-// Structure to hold data points
+// Struktur untuk menyimpan titik data (x, y)
 struct DataPoint {
-    double x;
-    double y;
+    double x; // Nilai variabel independen
+    double y; // Nilai variabel dependen
 };
 
-// Function to get the directory part of a path
+// Fungsi untuk mendapatkan direktori dari path file executable
+// Berguna untuk menyimpan file output di lokasi yang sama dengan program
 std::string getExecutableDir(const std::string& executable_path) {
-    size_t last_slash_idx = executable_path.rfind('/');
+    size_t last_slash_idx = executable_path.rfind('/'); // Cari slash terakhir (untuk path Linux/macOS)
     if (std::string::npos == last_slash_idx) {
-        last_slash_idx = executable_path.rfind('\\'); // For Windows paths
+        last_slash_idx = executable_path.rfind('\\'); // Jika tidak ada, cari backslash (untuk path Windows)
     }
     if (std::string::npos != last_slash_idx) {
-        return executable_path.substr(0, last_slash_idx + 1); // Include the trailing slash
+        return executable_path.substr(0, last_slash_idx + 1); // Kembalikan path direktori termasuk slash/backslash terakhir
     }
-    return ""; // No path separator, assume CWD or it's just the exe name
+    return ""; // Jika tidak ada pemisah path, kembalikan string kosong (mungkin CWD atau hanya nama exe)
 }
 
-
-// Function to read data from a file given its full path
+// Fungsi untuk membaca data dari file dengan path lengkap yang diberikan
 std::vector<DataPoint> readDataFromFullPath(const std::string& full_path_to_data) {
-    std::vector<DataPoint> data;
-    std::cout << "Attempting to read data from full path: " << full_path_to_data << std::endl;
-    std::ifstream file(full_path_to_data);
-    if (!file.is_open()) {
-        std::cerr << "Error: Could not open data file " << full_path_to_data << std::endl;
-        return data;
+    std::vector<DataPoint> data; // Vektor untuk menyimpan titik-titik data
+    std::cout << "Mencoba membaca data dari path lengkap: " << full_path_to_data << std::endl;
+    std::ifstream file(full_path_to_data); // Buka file input
+    if (!file.is_open()) { // Periksa apakah file berhasil dibuka
+        std::cerr << "Error: Tidak dapat membuka file data " << full_path_to_data << std::endl;
+        return data; // Kembalikan vektor kosong jika gagal
     }
-    DataPoint p;
-    while (file >> p.x >> p.y) {
-        data.push_back(p);
+    DataPoint p; // Variabel sementara untuk menyimpan satu titik data
+    while (file >> p.x >> p.y) { // Baca nilai x dan y dari setiap baris
+        data.push_back(p); // Tambahkan titik data ke vektor
     }
-    file.close();
+    file.close(); // Tutup file setelah selesai membaca
     if (!data.empty()) {
-        std::cout << "Successfully read data from: " << full_path_to_data << std::endl;
+        std::cout << "Berhasil membaca data dari: " << full_path_to_data << std::endl;
     }
-    return data;
+    return data; // Kembalikan vektor berisi data
 }
 
-// Function to print a matrix (for debugging)
+// Fungsi untuk mencetak matriks (untuk keperluan debugging)
 void printMatrix(const std::vector<std::vector<double>>& matrix) {
-    for (const auto& row : matrix) {
-        for (double val : row) {
-            std::cout << std::setw(10) << val << " ";
+    for (const auto& row : matrix) { // Iterasi melalui setiap baris
+        for (double val : row) { // Iterasi melalui setiap elemen dalam baris
+            std::cout << std::setw(12) << std::fixed << std::setprecision(4) << val << " "; // Cetak elemen dengan format
         }
-        std::cout << std::endl;
+        std::cout << std::endl; // Pindah ke baris baru setelah satu baris selesai dicetak
     }
 }
 
-// Function to print a vector (for debugging)
+// Fungsi untuk mencetak vektor (untuk keperluan debugging)
 void printVector(const std::vector<double>& vec) {
-    for (double val : vec) {
-        std::cout << std::setw(10) << val << " ";
+    for (double val : vec) { // Iterasi melalui setiap elemen dalam vektor
+        std::cout << std::setw(12) << std::fixed << std::setprecision(4) << val << " "; // Cetak elemen dengan format
     }
-    std::cout << std::endl;
+    std::cout << std::endl; // Pindah ke baris baru setelah vektor selesai dicetak
 }
 
-// Function to perform Gaussian elimination to solve Ax = B
+// Fungsi untuk melakukan eliminasi Gauss untuk menyelesaikan sistem persamaan linear Ax = B
+// Mengembalikan vektor solusi x
 std::vector<double> gaussianElimination(std::vector<std::vector<double>> A, std::vector<double> B) {
-    int n = B.size();
+    int n = B.size(); // Ukuran sistem (jumlah persamaan atau variabel)
+
+    // Proses eliminasi maju (forward elimination)
     for (int i = 0; i < n; ++i) {
+        // Pivoting parsial: cari baris dengan elemen pivot terbesar (nilai absolut)
         int maxRow = i;
         for (int k = i + 1; k < n; ++k) {
             if (std::abs(A[k][i]) > std::abs(A[maxRow][i])) {
                 maxRow = k;
             }
         }
+        // Tukar baris saat ini dengan baris yang memiliki pivot terbesar
         std::swap(A[i], A[maxRow]);
         std::swap(B[i], B[maxRow]);
-        double pivot = A[i][i];
-        if (std::abs(pivot) < 1e-9) {
-             std::cerr << "Error: Matrix is singular or nearly singular." << std::endl;
-             return {};
+
+        // Normalisasi baris pivot: bagi seluruh baris dengan elemen pivot
+        double pivot_val = A[i][i];
+        if (std::abs(pivot_val) < 1e-9) { // Periksa apakah pivot terlalu kecil (matriks singular)
+             std::cerr << "Error: Matriks bersifat singular atau mendekati singular." << std::endl;
+             return {}; // Kembalikan vektor kosong jika matriks singular
         }
-        for (int j = i; j < n; ++j) A[i][j] /= pivot;
-        B[i] /= pivot;
+        for (int j = i; j < n; ++j) {
+            A[i][j] /= pivot_val;
+        }
+        B[i] /= pivot_val;
+
+        // Eliminasi elemen di bawah pivot pada kolom saat ini
         for (int k = 0; k < n; ++k) {
-            if (k != i) {
-                double factor = A[k][i];
-                for (int j = i; j < n; ++j) A[k][j] -= factor * A[i][j];
-                B[k] -= factor * B[i];
+            if (k != i) { // Untuk semua baris lain (kecuali baris pivot)
+                double factor = A[k][i]; // Faktor pengali
+                for (int j = i; j < n; ++j) { // Kurangkan (faktor * baris pivot) dari baris k
+                    A[k][j] -= factor * A[i][j];
+                }
+                B[k] -= factor * B[i]; // Lakukan hal yang sama untuk vektor B
             }
         }
     }
-    return B;
+    // Pada titik ini, matriks A seharusnya menjadi matriks identitas (atau mendekati)
+    // dan vektor B berisi solusi
+    return B; // Kembalikan vektor B yang kini berisi solusi x
 }
 
-// Function to perform polynomial regression
+// Fungsi untuk melakukan regresi polinomial
+// Menerima vektor titik data dan derajat polinomial yang diinginkan
+// Mengembalikan vektor koefisien polinomial (a0, a1, ..., an)
 std::vector<double> polynomialRegression(const std::vector<DataPoint>& data, int degree) {
-    int n_points = data.size();
-    int m_coeffs = degree + 1;
+    int n_points = data.size();       // Jumlah titik data
+    int m_coeffs = degree + 1;      // Jumlah koefisien (derajat + 1)
 
-    if (n_points == 0) { std::cerr << "Error: No data points." << std::endl; return {}; }
-    if (degree < 0) { std::cerr << "Error: Degree must be non-negative." << std::endl; return {}; }
-    if (n_points < m_coeffs) { std::cerr << "Error: Not enough data points for degree " << degree << std::endl; return {}; }
+    // Pemeriksaan validitas input
+    if (n_points == 0) { 
+        std::cerr << "Error: Tidak ada titik data." << std::endl; 
+        return {}; // Kembalikan vektor kosong jika tidak ada data
+    }
+    if (degree < 0) { 
+        std::cerr << "Error: Derajat polinomial harus non-negatif." << std::endl; 
+        return {}; // Kembalikan vektor kosong jika derajat negatif
+    }
+    if (n_points < m_coeffs) { 
+        std::cerr << "Error: Jumlah titik data tidak cukup untuk derajat polinomial " << degree << std::endl; 
+        return {}; // Kembalikan vektor kosong jika data tidak cukup
+    }
 
+    // Matriks SumX (X^T * X) berukuran (m_coeffs x m_coeffs)
     std::vector<std::vector<double>> SumX(m_coeffs, std::vector<double>(m_coeffs, 0.0));
+    // Vektor SumXY (X^T * Y) berukuran (m_coeffs x 1)
     std::vector<double> SumXY(m_coeffs, 0.0);
+    
+    // Vektor untuk menyimpan jumlah dari x^k (sigma x_i^k)
+    // Ukurannya 2*degree + 1 karena elemen terbesar di SumX adalah sigma x_i^(2*degree)
     std::vector<double> x_powers_sum(2 * degree + 1, 0.0);
 
-    for (const auto& p : data) {
+    // Hitung sigma x_i^k untuk k dari 0 hingga 2*degree
+    for (const auto& p : data) { // Iterasi melalui setiap titik data
         for (int j = 0; j <= 2 * degree; ++j) {
-            x_powers_sum[j] += std::pow(p.x, j);
+            x_powers_sum[j] += std::pow(p.x, j); // Akumulasi x^j
         }
     }
+
+    // Bentuk matriks SumX (matriks normal equations)
+    // SumX[i][j] = sigma x_k^(i+j)
     for (int i = 0; i < m_coeffs; ++i) {
         for (int j = 0; j < m_coeffs; ++j) {
             SumX[i][j] = x_powers_sum[i + j];
         }
     }
-    for (const auto& p : data) {
+
+    // Bentuk vektor SumXY (vektor sisi kanan normal equations)
+    // SumXY[i] = sigma (y_k * x_k^i)
+    for (const auto& p : data) { // Iterasi melalui setiap titik data
         for (int i = 0; i < m_coeffs; ++i) {
-            SumXY[i] += p.y * std::pow(p.x, i);
+            SumXY[i] += p.y * std::pow(p.x, i); // Akumulasi y * x^i
         }
     }
 
-    std::cout << "Normal Equations Matrix (SumX) for degree " << degree << ":" << std::endl;
+    // Cetak matriks dan vektor normal equations (untuk debugging)
+    std::cout << "\nMatriks Normal Equations (SumX) untuk derajat " << degree << ":" << std::endl;
     printMatrix(SumX);
-    std::cout << "Normal Equations Vector (SumXY) for degree " << degree << ":" << std::endl;
+    std::cout << "Vektor Normal Equations (SumXY) untuk derajat " << degree << ":" << std::endl;
     printVector(SumXY);
 
+    // Selesaikan sistem SumX * A = SumXY menggunakan eliminasi Gauss untuk mendapatkan koefisien A
     return gaussianElimination(SumX, SumXY);
 }
 
+// Fungsi utama program
 int main(int argc, char* argv[]) {
+    // Periksa apakah argumen command-line yang diperlukan diberikan
     if (argc < 3) {
-        std::cerr << "Usage: " << (argc > 0 ? argv[0] : "polynomial_regression") 
-                  << " <polynomial_degree> <full_path_to_data_file>" << std::endl;
-        std::cerr << "Example: ./polyreg.exe 2 \"C:/path/to/data.txt\"" << std::endl;
-        return 1;
+        std::cerr << "Penggunaan: " << (argc > 0 ? argv[0] : "polynomial_regression") 
+                  << " <derajat_polinomial> <path_lengkap_ke_file_data>" << std::endl;
+        std::cerr << "Contoh: ./polyreg.exe 2 \"C:/path/ke/data.txt\"" << std::endl;
+        return 1; // Keluar dengan kode error jika argumen tidak cukup
     }
 
-    int polynomialDegree = 2; 
-    std::string dataFileFullPath = "";
-    std::string executableDir = "";
+    int polynomialDegree; // Variabel untuk menyimpan derajat polinomial
+    std::string dataFileFullPath; // Variabel untuk menyimpan path lengkap file data
+    std::string executableDir = ""; // Variabel untuk menyimpan direktori file executable
 
+    // Dapatkan direktori tempat file executable dijalankan
     if (argc > 0 && argv[0] != nullptr) {
         executableDir = getExecutableDir(argv[0]);
     }
-     std::cout << "Executable directory determined as: " << executableDir << std::endl;
+    std::cout << "Direktori executable ditentukan sebagai: " << executableDir << std::endl;
 
-
+    // Parse argumen derajat polinomial dari command-line
     try {
-        polynomialDegree = std::stoi(argv[1]);
-        if (polynomialDegree < 0) {
-            std::cerr << "Error: Polynomial degree must be non-negative. Got: " << argv[1] << std::endl;
+        polynomialDegree = std::stoi(argv[1]); // Konversi argumen pertama ke integer
+        if (polynomialDegree < 0) { // Periksa apakah derajat valid
+            std::cerr << "Error: Derajat polinomial harus non-negatif. Diberikan: " << argv[1] << std::endl;
             return 1;
         }
-    } catch (const std::invalid_argument& ia) {
-        std::cerr << "Invalid argument for polynomial degree: " << argv[1] << std::endl;
+    } catch (const std::invalid_argument& ia) { // Tangani jika argumen tidak valid
+        std::cerr << "Argumen tidak valid untuk derajat polinomial: " << argv[1] << std::endl;
         return 1;
-    } catch (const std::out_of_range& oor) {
-        std::cerr << "Argument for polynomial degree out of range: " << argv[1] << std::endl;
+    } catch (const std::out_of_range& oor) { // Tangani jika argumen di luar jangkauan
+        std::cerr << "Argumen untuk derajat polinomial di luar jangkauan: " << argv[1] << std::endl;
         return 1;
     }
 
+    // Ambil path lengkap file data dari argumen command-line kedua
     dataFileFullPath = argv[2];
-    std::cout << "Using Polynomial Degree: " << polynomialDegree << std::endl;
-    std::cout << "Data file path: " << dataFileFullPath << std::endl;
+    std::cout << "Menggunakan Derajat Polinomial: " << polynomialDegree << std::endl;
+    std::cout << "Path file data: " << dataFileFullPath << std::endl;
 
+    // Baca data dari file
     std::vector<DataPoint> data = readDataFromFullPath(dataFileFullPath);
 
+    // Periksa apakah data berhasil dibaca
     if (data.empty()) {
-        std::cerr << "Exiting due to data loading error." << std::endl;
-        return 1;
+        std::cerr << "Keluar karena error saat memuat data." << std::endl;
+        return 1; // Keluar jika tidak ada data yang dibaca
     }
 
-    std::cout << "Data points read: " << data.size() << std::endl;
+    std::cout << "Jumlah titik data yang dibaca: " << data.size() << std::endl;
 
+    // Lakukan regresi polinomial
     std::vector<double> coefficients = polynomialRegression(data, polynomialDegree);
 
+    // Periksa apakah koefisien berhasil dihitung
     if (!coefficients.empty()) {
-        std::cout << "\nCalculated Polynomial Coefficients (a0, ..., an) for degree " << polynomialDegree << ":" << std::endl;
+        std::cout << "\nKoefisien Polinomial yang Dihitung (a0, ..., an) untuk derajat " << polynomialDegree << ":" << std::endl;
         for (size_t i = 0; i < coefficients.size(); ++i) {
-            std::cout << "a" << i << ": " << coefficients[i] << std::endl;
+            std::cout << "a" << i << ": " << std::fixed << std::setprecision(6) << coefficients[i] << std::endl; // Cetak koefisien
         }
 
+        // Tentukan nama file untuk menyimpan koefisien
         std::string coeffFilenameBase = "coefficients_deg" + std::to_string(polynomialDegree) + ".txt";
-        std::string coeffFileFullPath = executableDir + coeffFilenameBase; // Save in executable's directory
+        // Simpan file koefisien di direktori yang sama dengan file executable
+        std::string coeffFileFullPath = executableDir + coeffFilenameBase; 
 
+        // Buka file untuk menulis koefisien
         std::ofstream coeffFile(coeffFileFullPath);
-        if (coeffFile.is_open()) {
+        if (coeffFile.is_open()) { // Periksa apakah file berhasil dibuka
             for (double coeff : coefficients) {
-                coeffFile << coeff << std::endl;
+                coeffFile << std::fixed << std::setprecision(15) << coeff << std::endl; // Tulis setiap koefisien ke file
             }
-            coeffFile.close();
-            std::cout << "\nCoefficients saved to " << coeffFileFullPath << std::endl;
+            coeffFile.close(); // Tutup file
+            std::cout << "\nKoefisien disimpan ke " << coeffFileFullPath << std::endl;
         } else {
-            std::cerr << "Error: Could not open " << coeffFileFullPath << " for writing." << std::endl;
-            // Fallback to CWD if writing to exe dir fails (e.g. permissions)
-            std::cerr << "Attempting to save to CWD: " << coeffFilenameBase << std::endl;
-            std::ofstream coeffFileCWD(coeffFilenameBase);
+            std::cerr << "Error: Tidak dapat membuka " << coeffFileFullPath << " untuk ditulis." << std::endl;
+            // Jika gagal menyimpan di direktori executable (misalnya karena masalah izin),
+            // coba simpan di Current Working Directory (CWD) sebagai fallback.
+            std::cerr << "Mencoba menyimpan ke CWD: " << coeffFilenameBase << std::endl;
+            std::ofstream coeffFileCWD(coeffFilenameBase); // Buka file di CWD
             if (coeffFileCWD.is_open()) {
                  for (double coeff : coefficients) {
-                    coeffFileCWD << coeff << std::endl;
+                    coeffFileCWD << std::fixed << std::setprecision(15) << coeff << std::endl;
                 }
                 coeffFileCWD.close();
-                std::cout << "\nCoefficients saved to " << coeffFilenameBase << " (in CWD as fallback)" << std::endl;
+                std::cout << "\nKoefisien disimpan ke " << coeffFilenameBase << " (di CWD sebagai fallback)" << std::endl;
             } else {
-                std::cerr << "Error: Could not open " << coeffFilenameBase << " for writing in CWD either." << std::endl;
+                std::cerr << "Error: Tidak dapat membuka " << coeffFilenameBase << " untuk ditulis di CWD juga." << std::endl;
             }
         }
     } else {
-        std::cerr << "Polynomial regression failed for degree " << polynomialDegree << "." << std::endl;
-        return 1;
+        std::cerr << "Regresi polinomial gagal untuk derajat " << polynomialDegree << "." << std::endl;
+        return 1; // Keluar jika regresi gagal
     }
 
-    return 0;
+    return 0; // Program selesai dengan sukses
 }
-
-/*
-Example of data.txt (to be provided via full path):
-0.0 1.1
-0.5 1.8
-1.0 2.7
-1.5 4.5
-2.0 5.8
-2.5 8.0
-3.0 10.1
-3.5 13.5
-4.0 17.3
-4.5 21.0
-5.0 25.5
-5.5 30.0
-6.0 36.2
-*/

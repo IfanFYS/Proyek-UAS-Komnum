@@ -8,7 +8,8 @@
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{microtype} % Helps with justification and overflow
-\usepackage{url} % For \url command, good for URLs
+% \usepackage{url} % Replaced by hyperref
+\usepackage[colorlinks=true, urlcolor=cyan, linkcolor=black, citecolor=black, filecolor=black]{hyperref} % Added for styled links
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
@@ -194,11 +195,15 @@ Proyek ini memberikan pemahaman praktis tentang penerapan salah satu metode penc
 
 \section*{Link Github}
 Repositori Github untuk proyek ini dapat diakses melalui link berikut:
-\url{https://github.com/IfanFYS/Proyek-UAS-Komnum}
+\href{https://github.com/IfanFYS/Proyek-UAS-Komnum}{\textit{\underline{https://github.com/IfanFYS/Proyek-UAS-Komnum}}}
 
 \section*{Link Youtube}
 Video demonstrasi program dapat dilihat di Youtube melalui link berikut:
-[PASTIKAN UNTUK MENGISI LINK YOUTUBE ANDA DI SINI]
+% Ganti placeholder di bawah ini dengan link YouTube Anda menggunakan format:
+% \href{URL_YOUTUBE_ANDA}{\textit{\underline{URL_YOUTUBE_ANDA}}}
+% Contoh (jika URL mengandung underscore, escape pada bagian teks): 
+% \href{https://www.youtube.com/watch?v=a_b-c_d}{\textit{\underline{https://www.youtube.com/watch?v=a\_b-c\_d}}}
+\href{belum}{\textit{\underline{belum}}}
 
 \section*{Referensi}
 % Please number citations consecutively within brackets \cite{b1}. 
