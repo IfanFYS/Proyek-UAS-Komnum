@@ -1,5 +1,9 @@
 # Implementasi Regresi Polinomial
 
+## Kontributor
+*   **Nama**: Fathan Yazid Satriani
+*   **NPM**: 2306250560
+
 ## Deskripsi Singkat
 Proyek ini bertujuan untuk mengimplementasikan algoritma regresi polinomial menggunakan bahasa C++ untuk analisis data. Regresi polinomial adalah sebuah metode dalam statistika dan pembelajaran mesin yang digunakan untuk memodelkan hubungan antara variabel independen (x) dan variabel dependen (y) sebagai polinomial derajat ke-n. Program C++ akan membaca data dari file, menghitung koefisien polinomial menggunakan metode *normal equations* yang diselesaikan dengan eliminasi Gauss, dan menyimpan koefisien tersebut. Selanjutnya, sebuah skrip Python digunakan untuk memvisualisasikan data asli dan kurva polinomial yang dihasilkan, memberikan representasi grafis dari kecocokan model.
 
@@ -109,10 +113,6 @@ Contoh:
     *   `polynomial_regression_residuals_degN.png`: Plot residual untuk regresi derajat N.
     *   `polynomial_regression_comparative_degX_Y_Z.png`: Plot perbandingan beberapa kurva regresi (derajat X, Y, Z).
 
-## Kontributor
-*   **Nama**: Fathan Yazid Satriani
-*   **NPM**: 2306250560
-
 ## Link Tambahan
 *   **Repositori GitHub**: [https://github.com/IfanFYS/Proyek-UAS-Komnum](https://github.com/IfanFYS/Proyek-UAS-Komnum)
-*   **Video Demonstrasi YouTube**: [PASTIKAN UNTUK MENGISI LINK YOUTUBE ANDA DI SINI]
+*   **Video Demonstrasi YouTube**: [https://youtu.be/icb7CtffLWc](https://youtu.be/icb7CtffLWc)

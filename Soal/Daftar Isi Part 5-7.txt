@@ -1,0 +1,121 @@
+PART FIVE: CURVE FITTING (Hal. 441)
+PT5.1 Motivation 441
+PT5.2 Mathematical Background 443
+PT5.3 Orientation 452
+CHAPTER 17 Least-Squares Regression (Hal. 456)
+
+17.1 Linear Regression 456
+17.2 Polynomial Regression 472
+17.3 Multiple Linear Regression 476
+17.4 General Linear Least Squares 479
+17.5 Nonlinear Regression 483
+Problems 487
+CHAPTER 18 Interpolation (Hal. 490)
+
+18.1 Newton's Divided-Difference Interpolating Polynomials 491
+18.2 Lagrange Interpolating Polynomials 502
+18.3 Coefficients of an Interpolating Polynomial 507
+18.4 Inverse Interpolation 507
+18.5 Additional Comments 508
+18.6 Spline Interpolation 511
+18.7 Multidimensional Interpolation 521
+Problems 524
+CHAPTER 19 Fourier Approximation (Hal. 526)
+
+19.1 Curve Fitting with Sinusoidal Functions 527
+19.2 Continuous Fourier Series 533
+19.3 Frequency and Time Domains 536
+19.4 Fourier Integral and Transform 540
+19.5 Discrete Fourier Transform (DFT) 542
+19.6 Fast Fourier Transform (FFT) 544
+19.7 The Power Spectrum 551
+19.8 Curve Fitting with Software Packages 552
+Problems 561
+CHAPTER 20 Case Studies: Curve Fitting (Hal. 563)
+
+20.1 Linear Regression and Population Models (Chemical/Bio Engineering) 563
+20.2 Use of Splines to Estimate Heat Transfer (Civil/Environmental Engineering) 567
+20.3 Fourier Analysis (Electrical Engineering) 569
+20.4 Analysis of Experimental Data (Mechanical/Aerospace Engineering) 570
+Problems 572
+EPILOGUE: PART FIVE (Hal. 582)
+
+PT5.4 Trade-Offs 582
+PT5.5 Important Relationships and Formulas 583
+PT5.6 Advanced Methods and Additional References 584
+PART SIX: NUMERICAL DIFFERENTIATION AND INTEGRATION (Hal. 587)
+PT6.1 Motivation 587
+PT6.2 Mathematical Background 597
+PT6.3 Orientation 599
+CHAPTER 21 Newton-Cotes Integration Formulas (Hal. 603)
+
+21.1 The Trapezoidal Rule 605
+21.2 Simpson's Rules 615
+21.3 Integration with Unequal Segments 624
+21.4 Open Integration Formulas 627
+21.5 Multiple Integrals 627
+Problems 629
+CHAPTER 22 Integration of Equations (Hal. 633)
+
+22.1 Newton-Cotes Algorithms for Equations 633
+22.2 Romberg Integration 634
+22.3 Adaptive Quadrature 640
+22.4 Gauss Quadrature 642
+22.5 Improper Integrals 650
+Problems 653
+CHAPTER 23 Numerical Differentiation (Hal. 655)
+
+23.1 High-Accuracy Differentiation Formulas 655
+23.2 Richardson Extrapolation 658
+23.3 Derivatives of Unequally Spaced Data 660
+23.4 Derivatives and Integrals for Data with Errors 661
+23.5 Partial Derivatives 662
+23.6 Numerical Integration/Differentiation with Software Packages 663
+Problems 670
+CHAPTER 24 Case Studies: Numerical Integration and Differentiation (Hal. 673)
+
+24.1 Integration to Determine the Total Quantity of Heat (Chemical/Bio Engineering) 673
+24.2 Effective Force on the Mast of a Racing Sailboat (Civil/Environmental Engineering) 675
+24.3 Root-Mean-Square Current by Numerical Integration (Electrical Engineering) 677
+24.4 Numerical Integration to Compute Work (Mechanical/Aerospace Engineering) 680
+Problems 684
+EPILOGUE: PART SIX (Hal. 694)
+
+PT6.4 Trade-Offs 694
+PT6.5 Important Relationships and Formulas 695
+PT6.6 Advanced Methods and Additional References 695
+PART SEVEN: ORDINARY DIFFERENTIAL EQUATIONS (Hal. 699)
+PT7.1 Motivation 699
+PT7.2 Mathematical Background 703
+PT7.3 Orientation 705
+CHAPTER 25 Runge-Kutta Methods (Hal. 709)
+
+25.1 Euler's Method 710
+25.2 Improvements of Euler's Method 721
+25.3 Runge-Kutta Methods 729
+25.4 Systems of Equations 739
+25.5 Adaptive Runge-Kutta Methods 744
+Problems 752
+CHAPTER 26 Stiffness and Multistep Methods (Hal. 755)
+
+26.1 Stiffness 755
+26.2 Multistep Methods 759
+Problems 779
+CHAPTER 27 Boundary-Value and Eigenvalue Problems (Hal. 781)
+
+27.1 General Methods for Boundary-Value Problems 782
+27.2 Eigenvalue Problems 789
+27.3 Odes and Eigenvalues with Software Packages 801
+Problems 808
+CHAPTER 28 Case Studies: Ordinary Differential Equations (Hal. 811)
+
+28.1 Using ODEs to Analyze the Transient Response of a Reactor (Chemical/Bio Engineering) 811
+28.2 Predator-Prey Models and Chaos (Civil/Environmental Engineering) 818
+28.3 Simulating Transient Current for an Electric Circuit (Electrical Engineering) 822
+28.4 The Swinging Pendulum (Mechanical/Aerospace Engineering) 827
+Problems 831
+EPILOGUE: PART SEVEN (Hal. 841)
+
+PT7.4 Trade-Offs 841
+PT7.5 Important Relationships and Formulas 842
+PT7.6 Advanced Methods and Additional References 842
